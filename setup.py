@@ -3,11 +3,11 @@ from setuptools import setup
 
 setup(
     name='django_jinja_middleware',
-    version='1.0.1',
+    version='1.0.2',
     description='Django middleware class that takes TemplateResponses and renders them with Jinja, instead of the Django stock templating language.',
     author='Luke Sneeringer',
     author_email='lukesneeringer@gmail.com',
-    url='http://github.com/lukesneeringer/django-jinja-mw/',
+    url='http://github.com/lukesneeringer/django-jinja/',
     
     # what to install
     packages=['django_jinja'],
