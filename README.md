@@ -27,3 +27,73 @@ adding the following class to your `MIDDLEWARE_CLASSES`:
     )
     
 That's it!
+
+
+Customizing Jinja
+=================
+
+Environment
+-----------
+
+The `django_jinja` package sets some sensible default settings for the Jinja engine.
+In particular, it will introspect the template loaders and the context processors
+given in the Django settings (`TEMPLATE_LOADERS`, `TEMPLATE_CONTEXT_PROCESSORS`, respectively)
+and install them in their equivalent forms in Jinja.
+
+In addition, `django_jinja` will default to adding a `line_comment_prefix` option of `# `
+(that's a hash mark, then space), set the loop controls to on (adding the `continue` and `break`
+tags, if you want them), and set `trim_blocks` to `True`.
+
+To make changes to this at the project level, add `JINJA_ENVIRONMENT` to your settings file,
+and set it as a dictionary mapping of the keyword arguments to be passed to the Jinja2.Environment
+callable. Any keyword arguments you specify will override the defaults noted above.
+
+Globals
+-------
+
+The `django_jinja` package will add two globals to your templates. The first is `url`, which
+is a reference to `django.core.urlresolvers.reverse`. The second is `range`, which maps
+to the Python 2 `xrange`.
+
+To add globals at the project level, add a `JINJA_GLOBALS` dictionary to your settings file.
+If you specify a global that is set by `django_jinja`, yours wins.
+
+Filters
+-------
+
+The `django_jinja` package will add a subset of Django's filters to maximize convenience.
+The filters that are automatically added are:
+
+  * capfirst
+  * date (renamed to `format_date`)
+  * linebreaks
+  * linebreaksbr
+  * linenumbers
+  * pluralize
+  * removetags
+  * slugify
+  * striptags
+  * timesince
+  * timeuntil
+  * title
+  * truncatewords
+  * truncatewords\_html
+  * unordered\_list
+  * urlize
+  * urlizetrunc
+  * yesno
+  
+All of these retain their original names except `date`, which is now renamed to `format_date`.
+
+You can add additional filters, or override the ones we've added, by adding a `JINJA_FILTERS` dictionary
+to your Django settings file. If you specify a filter that the `django_jinja` specifies (the list above),
+then yours wins.
+
+
+Contact
+=======
+
+  * Luke Sneeringer
+  * Email: lukesneeringer@gmail.com
+  * Twitter: @lukesneeringer
+  * GitHub: github.com/lukesneeringer
