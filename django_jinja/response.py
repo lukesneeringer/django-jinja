@@ -40,7 +40,6 @@ env.globals = {
 }
 env.globals.update(getattr(settings, 'JINJA_GLOBALS', {}))
 
-env.filters = {}
 for f in ('capfirst', 'linebreaks', 'linebreaksbr', 'linenumbers', 'pluralize', 'removetags', 'slugify', 'striptags', 'timesince', 'timeuntil', 'title', 'truncatewords', 'truncatewords_html', 'unordered_list', 'urlize', 'urlizetrunc', 'yesno'):
     env.filters[f] = getattr(defaultfilters, f)
 env.filters['format_date'] = defaultfilters.date
