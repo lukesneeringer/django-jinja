@@ -2,9 +2,10 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django import template
-from django.template import defaultfilters
+from django.template import defaultfilters, Template as DjangoTemplate
 from django.template.context import get_standard_processors
 from django.template.response import TemplateResponse
+from jinja2.environment import Template as JinjaTemplate
 import jinja2
 
 
@@ -60,8 +61,32 @@ class JinjaTemplateResponse(TemplateResponse):
         # the first time it's called, but pulling the same object thereafter
         self._jinja_env_object = env
         return env
+
+    @property
+    def rendered_content(self):
+        """Return the freshly rendered content for the template and context
+        described by this JinjaTemplateResponse object."""
+
+        # first, get us the template object
+        template = self.resolve_template(self.template_name)
+
+        # sanity check: if this is a **Django** template object, then I just want
+        # to go through superclass' system
+        if isinstance(template, DjangoTemplate):
+            context = super(JinjaTemplateResponse, self).resolve_context(self.context_data)
+        else:
+            context = self.resolve_context(self.context_data)
+
+        # now render the template and return the content
+        content = template.render(context)
+        return content
+
     
     def resolve_context(self, context):
+        """Change the context object into a dictionary (what Jinja uses),
+        and go through all our context processors from settings."""
+
+        # get me a dictionary
         if context:
             self.context = dict(context)
         else:
@@ -82,9 +107,22 @@ class JinjaTemplateResponse(TemplateResponse):
         Jinja template object.
         If an explicit Django template object is passed, do nothing."""
         
+        # sanity check: if I got an explicit Django template object,
+        # I don't want to do anything at all
+        if isinstance(template, DjangoTemplate):
+            return template
+
+        # sanity check: what if I get a **Jinja** template?
+        # don't do anything to that either
+        if isinstance(template, JinjaTemplate):
+            return template
+
+        # okay, if I have a string or iterable, then figure out the right template
+        # and return it
         if isinstance(template, basestring):
             return self._environment.get_template(template)
         elif isinstance(template, (list, tuple)):
             return self._environment.select_template(template)
-        else:
-            return template
+
+        # something is wrong; stop
+        raise TypeError, 'Unrecognized object sent as a template.'
