@@ -5,9 +5,10 @@ from django import template
 from django.template import defaultfilters, Template as DjangoTemplate
 from django.template.context import get_standard_processors
 from django.template.response import TemplateResponse
+from django.test.signals import template_rendered
+from django.test.utils import instrumented_test_render as test_mode_render
 from jinja2.environment import Template as JinjaTemplate
 import jinja2
-
 
 class JinjaTemplateResponse(TemplateResponse):
     """Subclass of TemplateResponse that routes its response
@@ -77,36 +78,47 @@ class JinjaTemplateResponse(TemplateResponse):
         else:
             context = self.resolve_context(self.context_data)
 
+            # sanity check: are we in test mode?
+            # the `./manage.py test` command sets up a test environment, and
+            #   one of the things it does is monkey-patch the Django template's
+            #   render method to send a special signal. [1]
+            # in order for Django tests to pass with this middleware installed,
+            #   I need to ensure that I mimic the same behavior; I will do this by
+            #   testing for the presence of the original_render method on
+            #   the Django template class, and sending out the signal
+            # [1]: https://github.com/django/django/blob/stable/1.4.x/django/test/utils.py, line 73
+            if hasattr(DjangoTemplate, 'original_render'):
+                template_rendered.send(sender=self, template=self, context=context)
+
         # now render the template and return the content
         content = template.render(context)
         return content
 
-    
     def resolve_context(self, context):
         """Change the context object into a dictionary (what Jinja uses),
         and go through all our context processors from settings."""
 
         # get me a dictionary
         if context:
-            self.context = dict(context)
+            self.context_data = dict(context)
         else:
-            self.context = {}
+            self.context_data = {}
         
         # I still want to keep the use of my Django context processors
         # even though this is a Jinja template; therefore, process them manually
         for context_processor in get_standard_processors():
             new_stuff = context_processor(self._request)
             if new_stuff:
-                self.context.update(dict(new_stuff))
+                self.context_data.update(dict(new_stuff))
     
         # return a flat dict; jinja doesn't have context objects
-        return self.context
+        return self.context_data
     
     def resolve_template(self, template):
         """Takes a template and tries to return back the appropriate
         Jinja template object.
         If an explicit Django template object is passed, do nothing."""
-        
+      
         # sanity check: if I got an explicit Django template object,
         # I don't want to do anything at all
         if isinstance(template, DjangoTemplate):
