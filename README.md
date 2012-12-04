@@ -10,6 +10,9 @@ It works with Django 1.4 or up. It will *mostly* work with Django 1.3 as well,
 but some stock Django views (such as the built-in login view) weren't changed
 to use `TemplateResponse` until Django 1.4.
 
+All unit tests against Django 1.4.2 still pass when this middleware is installed,
+even those that use particular templates.
+
 
 Installing
 ==========
@@ -48,6 +51,7 @@ To make changes to this at the project level, add `JINJA_ENVIRONMENT` to your se
 and set it as a dictionary mapping of the keyword arguments to be passed to the Jinja2.Environment
 callable. Any keyword arguments you specify will override the defaults noted above.
 
+
 Globals
 -------
 
@@ -57,6 +61,23 @@ to the Python 2 `xrange`.
 
 To add globals at the project level, add a `JINJA_GLOBALS` dictionary to your settings file.
 If you specify a global that is set by `django_jinja`, yours wins.
+
+
+Other Configuration
+-------------------
+
+The `django_jinja` package listens to one additional setting:
+
+### JINJA_EXCLUDE_PATHS
+
+The `JINJA_EXCLUDE_PATHS` setting provides a list of regular expressions which,
+if the value of `request.path` matches _any_ of them, the middleware will simply do
+nothing (pass the response through).
+
+By default, this is set to `['^/admin/']`, since the Django admin uses its own
+Django templates, and is generally installed to that URL. If your admin is located elsewhere,
+or if you need to exclude other paths from this behavior, simply set this setting.
+
 
 Filters
 -------
