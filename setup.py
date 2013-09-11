@@ -42,7 +42,7 @@ setup(
     
     # How to do the install...
     install_requires=open(pip_requirements, 'r').read().strip().split('\n'),
-    packages=[i for i in find_packages() if i.startswith('django_pg')],
+    packages=[i for i in find_packages() if i.startswith('django_jinja')],
     provides=['django_jinja'],
 
     # Running tests
