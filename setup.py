@@ -36,7 +36,7 @@ setup(
     description=' '.join((
         'Django middleware class that takes TemplateResponses and',
         'renders them with Jinja, instead of the Django stock',
-        'templating language.',
+        'templating language. For Python 2 or Python 3, and Django >= 1.4',
     )),
     license='New BSD',
     

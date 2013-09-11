@@ -1,5 +1,4 @@
-django-jinja-middleware
-=======================
+[![Build Status](https://travis-ci.org/lukesneeringer/django-jinja.png?branch=master)](https://travis-ci.org/lukesneeringer/django-jinja) [![Coverage](https://coveralls.io/repos/lukesneeringer/django-jinja/badge.png?branch=master)](https://coveralls.io/r/lukesneeringer/django-jinja)
 
 This package installs `django_jinja`, which is a tiny Python package that,
 when installed as middleware in any Django application, will cause the Jinja2
@@ -8,11 +7,11 @@ provided you used a `TemplateResponse` in your Django view.
 
 It works with Django 1.4 or up. It will *mostly* work with Django 1.3 as well,
 but some stock Django views (such as the built-in login view) weren't changed
-to use `TemplateResponse` until Django 1.4.
+to use `TemplateResponse` until Django 1.4. It is tested against Python 2.7
+and Python 3.3, but Python 2.6 should work as well.
 
 
-Installing
-==========
+### Installing
 
 Install the package using pip:
 
@@ -29,11 +28,9 @@ adding the following class to your `MIDDLEWARE_CLASSES`:
 That's it!
 
 
-Customizing Jinja
-=================
+### Customizing Jinja
 
-Environment
------------
+#### Environment
 
 The `django_jinja` package sets some sensible default settings for the
 Jinja engine.
@@ -54,8 +51,7 @@ arguments to be passed to the `Jinja2.Environment` callable. Any keyword
 arguments you specify will override the defaults noted above.
 
 
-Globals
--------
+#### Globals
 
 The `django_jinja` package will add two globals to your templates. The
 first is `url`, which is a reference to `django.core.urlresolvers.reverse`.
@@ -67,12 +63,11 @@ to your settings file. If you specify a global that is set by `django_jinja`,
 yours wins.
 
 
-Other Configuration
--------------------
+#### Other Configuration
 
 The `django_jinja` package listens to one additional setting:
 
-### JINJA_EXCLUDE_PATHS
+**JINJA_EXCLUDE_PATHS**
 
 The `JINJA_EXCLUDE_PATHS` setting provides a list of regular expressions
 which, if the value of `request.path` matches _any_ of them, the middleware
@@ -84,8 +79,7 @@ is located elsewhere, or if you need to exclude other paths from this
 behavior, simply set this setting.
 
 
-Filters
--------
+#### Filters
 
 The `django_jinja` package will add a subset of Django's filters to maximize convenience.
 The filters that are automatically added are:
@@ -116,23 +110,25 @@ You can add additional filters, or override the ones we've added, by adding
 a `JINJA_FILTERS` dictionary to your Django settings file. If you specify a
 filter that the `django_jinja` specifies (the list above), then yours wins.
 
-Revisions
-=========
+#### Running the Tests
+
+To run the tests, make a virtualenv, install the requirements that are listed
+in `requirements.txt`, and then invoke `python tests/runtests.py`.
+
+#### Revisions
 
 **2.0 (September 11, 2013)**
 
   * django_jinja now supports both Python 2 and Python 3.
 
 
-Contact
-=======
+#### Contact
 
   * Luke Sneeringer
   * Email: luke@sneeringer.com
   * Twitter: @lukesneeringer
   * GitHub: github.com/lukesneeringer
 
-License
-=======
+#### License
 
 New BSD
