@@ -1,0 +1,8 @@
+# ----------------------
+# -- Package Metadata --
+# ----------------------
+include AUTHORS
+include LICENSE
+include VERSION
+include django_jinja/VERSION
+include requirements.txt

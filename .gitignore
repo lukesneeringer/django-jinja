@@ -1,5 +1,41 @@
-*.pyc
-*.DS_Store
-dist
+# Apple
+.DS_Store
+
+# Python
 *.egg-info
-build
+*.pyc
+__pycache__
+build/
+dist/
+
+# PyCharm  
+.idea/
+
+# Testing
+.coverage
+.coverage.*
+.coverage-html/
+.tox/
+
+# Vagrant
+.vagrant/
+
+# Chef
+Berksfile.lock
+
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
+
+# Kitchen
+.kitchen/
+.kitchen.local.yml
+
+# vim
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
